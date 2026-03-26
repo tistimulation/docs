@@ -9,3 +9,6 @@ github_username:  tistimulation
 
 aux_links:
   TI Stimulation Homepage: https://tistimulation.com
+
+include:
+  - tmp.xlsx

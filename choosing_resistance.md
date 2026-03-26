@@ -1,7 +1,7 @@
 ---
 title: Choosing Resistance Values
 layout: default
-nav_order: 5
+nav_order: 6
 ---
 
 # Choosing Resistor Values

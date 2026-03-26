@@ -1,7 +1,8 @@
 ---
-title: Channel Isolation
+title: Channel Isolation (Crosstalk)
 layout: default
-nav_order: 3
+parent: Testing Stimulator Outputs
+nav_order: 4
 ---
 
 # Testing Stimulator Channel Isolation
