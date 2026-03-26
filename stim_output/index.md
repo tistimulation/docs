@@ -7,4 +7,4 @@ has_children: true
 
 This section documents testing protocols for TI stimulator outputs.
 
-To record experimental results - please use attached [Microsoft Excel spreadsheet](/docs/tmp.xlsx).
+To record experimental results - please use attached [Microsoft Excel spreadsheet](../tmp.xlsx).
