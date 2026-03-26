@@ -7,7 +7,7 @@ nav_order: 2
 # Testing Stimulator Current Output
 The tester should test each TI channel independently for this test, i.e. if channel 1 is outputting current, then channel 2 should be switched off - and vice versa.
 
-#### Procedure - Comparing Actual Current Amplitude to Programmed Current Amplitude
+## Procedure - Comparing Actual Current Amplitude to Programmed Current Amplitude
 
 This test procedure covers to how to verify the actual current amplitude matches the programmed current amplitude of the stimulator.
 
@@ -22,7 +22,7 @@ This test procedure covers to how to verify the actual current amplitude matches
 
 Analysing the output of steps 5 and 8, ensure that the programmed current amplitudes is acceptably close to the actual current amplitudes. A non-negligble mismatch indicates a hardware fault, or connection issue.
 
-#### Procedure - Assessing Frequency Response of Stimulator Output
+## Procedure - Assessing Frequency Response of Stimulator Output
 
 This test procudure covers how to verify the stimulation frequency is within the capability of the stimulator used. Example starting frequency of 1kHz is used here and the range of testing frequencies is not defined - it is up to the tester to determine which frequencies are of interest to their use cases.
 

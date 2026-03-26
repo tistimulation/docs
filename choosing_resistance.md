@@ -1,8 +1,7 @@
 ---
 title: Choosing Resistance Values
 layout: default
-parent: Concurrent EEG
-nav_order: 3
+nav_order: 5
 ---
 
 # Choosing Resistor Values
@@ -30,7 +29,7 @@ R6 and R7 are used to tune voltage amplitudes for EEG_Sig and EEG_Ref. Divide th
 * (R5+R6+R7+R8)/(R1+R2+R5+R6+R7+R8) should be determined such as to match amplitude modulation index observed at the voltage output of current source 1 (VOut1 referred to VOut2).
 * (R5+R6+R7+R8)/(R3+R4+R5+R6+R7+R8) should be determined such as to match amplitude modulation index observed at the voltage output of current source 2 (VOut3 referred to VOut4).
 
-#### Example
+# Example
 Both TI currents are connected to the head at the appropriate locations. They both output at 2mA. EEG Signal, Reference and Ground and placed on the head at the appropriate locations. Both TI Currents are activated.
 * The voltage observed between EEG Signal and EEG Ground has a maximum measurement of 200mV.
 * The voltage observed between EEG Signal and EEG Ground has a maximum measurement of 20mV.
