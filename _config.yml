@@ -1,4 +1,4 @@
-title: TI Hardware Protocols
+title: TI Testing Protocols
 email: tistimulationteam@gmail.com
 description: Documentation for various hardware testing protocols for Temporal Interference stimulators.
 theme: just-the-docs
@@ -11,4 +11,6 @@ aux_links:
   TI Stimulation Homepage: https://tistimulation.com
 
 include:
-  - tmp.xlsx
+  - TI_Workshop_HardwareTesting_Practical.xlsx
+  - TI_Workshop_VirtualBench_Practical_editable.pdf
+  - TI_Workshop_Human_Deployment_Practical_editable.pdf
