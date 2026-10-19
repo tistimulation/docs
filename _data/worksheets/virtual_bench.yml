@@ -1,0 +1,367 @@
+# Virtual Bench worksheet content.
+#
+# Block types:
+#   note     - plain instruction text
+#   step     - bold "do this" instruction
+#   params   - parameter table; group style: i1 | i2 | fsk
+#   question - see fields below
+#
+# Question fields:
+#   id          - unique, stable id (used to save answers in the browser)
+#   prompt      - the question
+#   parts       - graded inputs, each with:
+#                   kind: choice  -> options + answer
+#                   kind: numeric -> answer + unit + tolerance (absolute)
+#                   kind: ratio   -> answer as "a:b" (accepts 1:3, 1/3, 0.5:1.5, 0.333)
+#   text        - label for a free-text box (never graded, answer revealed instead)
+#   task        - label for a "done" checkbox (no grading)
+#   explanation - the model answer, shown once the participant submits
+#
+# Strings may contain simple HTML (<b>, <i>, <br>, <ul><li>).
+
+id: virtual_bench
+title: TI Stimulation Virtual Bench
+report_title: TI Stimulation Virtual Bench – Worksheet Report
+
+sections:
+  - heading: Waveform Visualiser
+    blocks:
+      - type: params
+        title: Parameter settings
+        groups:
+          - name: I1
+            style: i1
+            rows:
+              - ["Frequency 1 (Hz)", 2000]
+              - ["Phase 1 (Degrees)", 0]
+              - ["Amplitude 1 (mA)", 1]
+          - name: I2
+            style: i2
+            rows:
+              - ["Frequency 2 (Hz)", 2010]
+              - ["Phase 2 (Degrees)", 180]
+              - ["Amplitude 2 (mA)", 1]
+
+      - type: note
+        text: "Inspect the waveform of the applied currents and voltages."
+
+      - type: question
+        id: wf-modulated
+        prompt: "Is the amplitude of the current or voltage modulated?"
+        parts:
+          - label: Current
+            kind: choice
+            options: ["Yes", "No"]
+            answer: "No"
+          - label: Voltage
+            kind: choice
+            options: ["Yes", "No"]
+            answer: "Yes"
+        text: "If modulation is observed – why?"
+        explanation: "No current modulation because of channel isolation. Voltage modulation because each current source must compensate for the opposite current's frequency across the common load."
+
+      - type: note
+        text: "Inspect the spectrum of the sum current."
+
+      - type: question
+        id: wf-df
+        prompt: "Does it have a frequency component at <i>Δf</i>?"
+        parts:
+          - kind: choice
+            options: ["Yes", "No"]
+            answer: "No"
+        text: "Why or why not?"
+        explanation: "No – because only 2000 Hz and 2010 Hz are output from the stimulators."
+
+      - type: note
+        text: "Inspect the waveform and spectrum of the sum current."
+
+      - type: question
+        id: wf-max
+        prompt: "What is the maximum amplitude?"
+        parts:
+          - kind: numeric
+            answer: 2
+            unit: mA
+            tolerance: 0.05
+        explanation: "2 mA – at the envelope peak the two 1 mA currents add in phase (1 + 1 = 2 mA)."
+
+      - type: question
+        id: wf-env
+        prompt: "What is the envelope amplitude, (maximum envelope − minimum envelope) / 2?"
+        parts:
+          - kind: numeric
+            answer: 1
+            unit: mA
+            tolerance: 0.05
+        explanation: "1 mA – the envelope swings between 2 mA (currents in phase) and 0 mA (currents in anti-phase), so (2 − 0) / 2 = 1 mA."
+
+      - type: step
+        text: "Decrease the amplitude of I1 (Amplitude 1) to 0.5 mA.<br>Increase the amplitude of I2 (Amplitude 2) to 1.5 mA."
+
+      - type: note
+        text: "Inspect the waveform and spectrum of the sum current."
+
+      - type: question
+        id: wf-max-2
+        prompt: "Is the maximum current different?"
+        parts:
+          - kind: choice
+            options: ["Yes", "No"]
+            answer: "No"
+        explanation: "No – the maximum is still 0.5 + 1.5 = 2 mA."
+
+      - type: question
+        id: wf-env-2
+        prompt: "Is the envelope amplitude different?"
+        parts:
+          - kind: choice
+            options: ["Yes", "No"]
+            answer: "Yes"
+        text: "Why?"
+        explanation: "Yes – because the current ratio changed. The envelope now swings between 2 mA and 1 mA (1.5 − 0.5), so the envelope amplitude is (2 − 1) / 2 = 0.5 mA."
+
+  - heading: Field Distribution Visualiser
+    blocks:
+      - type: note
+        text: "Switch to the Field Distribution Visualiser tab, and apply the following settings:"
+
+      - type: params
+        title: Parameter settings
+        groups:
+          - name: Pair A Electrodes
+            style: i1
+            rows:
+              - ["A+", "E11"]
+              - ["A−", "E8"]
+              - ["f1 (Hz)", 2000]
+              - ["I1 (mA)", 1]
+          - name: Pair B Electrodes
+            style: i2
+            rows:
+              - ["B+", "E1"]
+              - ["B−", "E4"]
+              - ["f2 (Hz)", 2010]
+              - ["I2 (mA)", 1]
+
+      - type: note
+        text: "Inspect the locus of the TI stimulation (envelope modulation amplitude) in the x and y directions."
+
+      - type: question
+        id: fd-stronger
+        prompt: "Which one is stronger?"
+        parts:
+          - kind: choice
+            options: ["X direction", "Y direction"]
+            answer: "Y direction"
+        explanation: "The Y direction is stronger."
+
+      - type: step
+        text: "Change A+ to E10 and B+ to E2."
+
+      - type: question
+        id: fd-locus
+        prompt: "How does it affect the TI stimulation locus?"
+        text: "Your observation"
+        explanation: "The locus is split in two in the X direction."
+
+      - type: step
+        text: "Change the Pair A current I1 amplitude to 0.5 mA.<br>Change the Pair B current I2 amplitude to 1.5 mA."
+
+      - type: question
+        id: fd-ratio-1
+        prompt: "What is the current sum and current amplitude ratio?"
+        parts:
+          - label: Current sum
+            kind: numeric
+            answer: 2
+            unit: mA
+            tolerance: 0.01
+          - label: "Amplitude ratio (I1 : I2)"
+            kind: ratio
+            answer: "1:3"
+        explanation: "Sum: 0.5 + 1.5 = 2 mA. Amplitude ratio: 0.5 : 1.5 = 1 : 3."
+
+      - type: question
+        id: fd-location-1
+        prompt: "How does it affect the location of the TI locus relative to the electrodes?"
+        text: "Your observation"
+        explanation: "The locus is closer to the weaker stimulation electrode pair (Pair A)."
+
+      - type: step
+        text: "Change the Pair A current I1 amplitude to 0.2 mA.<br>Change the Pair B current I2 amplitude to 1.8 mA."
+
+      - type: question
+        id: fd-ratio-2
+        prompt: "What is the current sum and current amplitude ratio?"
+        parts:
+          - label: Current sum
+            kind: numeric
+            answer: 2
+            unit: mA
+            tolerance: 0.01
+          - label: "Amplitude ratio (I1 : I2)"
+            kind: ratio
+            answer: "1:9"
+        explanation: "Sum: 0.2 + 1.8 = 2 mA. Amplitude ratio: 0.2 : 1.8 = 1 : 9."
+
+      - type: question
+        id: fd-location-2
+        prompt: "How does it affect the location of the TI locus relative to the electrodes?"
+        text: "Your observation"
+        explanation: "The locus is even closer to the weaker stimulation electrode pair (Pair A)."
+
+      - type: note
+        text: "Switch back to the Waveform Visualiser tab."
+
+  - heading: FSK TI stimulation
+    blocks:
+      - type: note
+        text: "Change to TI stimulation with frequency shift keying (FSK) waveform and set the following parameters:"
+
+      - type: params
+        groups:
+          - name: I1 Parameters
+            style: i1
+            rows:
+              - ["Frequency 1 (Hz)", 2000]
+              - ["Phase 1 (Degrees)", 0]
+              - ["Amplitude I1 (mA)", 1]
+          - name: I2 Parameters
+            style: i2
+            rows:
+              - ["Freq 2 Outside Pulse (Hz)", 2000]
+              - ["Freq 2 Inside Pulse (Hz)", 2100]
+              - ["Phase 2 (Degrees)", 180]
+              - ["Amplitude I2 (mA)", 1]
+          - name: FSK Parameters
+            style: fsk
+            rows:
+              - ["Pulse Repetition Frequency (Hz)", 10]
+              - ["Number of Pulses", 1]
+
+      - type: note
+        text: "Inspect the waveform of the applied <b>currents</b>.<br><i>The simulation speed can be slowed down with the ‘Time Speed’ slider in the Playback controls. The simulation can also be paused with the pause button in the Playback controls.</i>"
+
+      - type: question
+        id: fsk-shift
+        prompt: "Is the frequency shift evident in I2?"
+        parts:
+          - kind: choice
+            options: ["Yes", "No"]
+            answer: "Yes"
+        explanation: "Yes – I2 switches from 2000 Hz to 2100 Hz during each pulse."
+
+      - type: note
+        text: "Inspect the spectrum of the applied currents."
+
+      - type: question
+        id: fsk-spectrum
+        prompt: "How does it differ from normal TI stimulation?"
+        text: "Your observation"
+        explanation: "There are many spikes in the spectrum, they are 10 Hz apart and cancel to zero at multiples of 100 Hz."
+
+      - type: note
+        text: "Inspect the spectrum of the sum current."
+
+      - type: question
+        id: fsk-sum
+        prompt: "How does it differ from the individual applied currents?"
+        text: "Your observation"
+        explanation: "There is no current outside of the pulse."
+
+      - type: question
+        id: fsk-df
+        prompt: "Does it have a frequency component at <i>Δf</i>?"
+        parts:
+          - kind: choice
+            options: ["Yes", "No"]
+            answer: "No"
+        explanation: "No."
+
+      - type: question
+        id: fsk-prf
+        prompt: "How is the pulse repetition frequency evident in the spectrum?"
+        text: "Your observation"
+        explanation: "The spectral spikes are all 10 Hz apart from each other."
+
+      - type: step
+        text: "Change Phase 2 to various values (0, 90, 180, 270)."
+
+      - type: question
+        id: fsk-phase
+        prompt: "How does the phase delay between the currents affect the sum current?"
+        text: "Your observation"
+        explanation: "<ul><li><b>0°:</b> full envelope outside of the pulse</li><li><b>90° / 270°:</b> partial envelope outside of the pulse</li><li><b>180°:</b> no envelope outside of the pulse</li></ul>"
+
+      - type: step
+        text: "Change Phase 2 to 180 degrees.<br>Change Freq 2 inside pulse to 2020 Hz.<br>Change PRF to 5 Hz."
+
+      - type: question
+        id: fsk-duration-1
+        prompt: "What is the time from frequency switch onset to offset?"
+        parts:
+          - kind: numeric
+            answer: 50
+            unit: ms
+            tolerance: 1
+        explanation: "50 ms – one pulse lasts one beat period, 1 / <i>Δf</i> = 1 / (2020 − 2000 Hz) = 50 ms."
+
+      - type: step
+        text: "Change Number of Pulses to 3."
+
+      - type: question
+        id: fsk-duration-3
+        prompt: "What is the time from frequency switch onset to offset?"
+        parts:
+          - kind: numeric
+            answer: 150
+            unit: ms
+            tolerance: 1
+        text: "Why?"
+        explanation: "150 ms – the frequency switch now lasts 3 beat periods: 3 × 50 ms = 150 ms."
+
+      - type: question
+        id: fsk-set
+        prompt: "Set the parameters to 100 Hz <i>Δf</i>, every 200 ms, with 50 ms between frequency switch onset and offset."
+        task: "Done – I have set these parameters in the simulator"
+        explanation: "Freq 2 Inside Pulse = 2100 Hz (<i>Δf</i> = 100 Hz), PRF = 5 Hz (one switch every 200 ms), Number of Pulses = 5 (50 ms ÷ 10 ms beat period)."
+
+  - heading: PWM TI stimulation
+    blocks:
+      - type: note
+        text: "Change to TI stimulation with PWM waveform and set the following parameters:"
+
+      - type: params
+        title: Parameter settings
+        groups:
+          - name: I1
+            style: i1
+            rows:
+              - ["Frequency 1 (Hz)", 2000]
+              - ["Phase 1 (Degrees)", 0]
+              - ["Amplitude 1 (mA)", 1]
+          - name: I2
+            style: i2
+            rows:
+              - ["Frequency 2 (Hz)", 2010]
+              - ["Phase 2 (Degrees)", 180]
+              - ["Amplitude 2 (mA)", 1]
+
+      - type: note
+        text: "Inspect the waveform and spectrum of the sum current."
+
+      - type: question
+        id: pwm-diff
+        prompt: "How does it differ from normal TI stimulation?"
+        text: "Your observation"
+        explanation: "The currents are square waves."
+
+      - type: question
+        id: pwm-df
+        prompt: "Does it have a frequency component at <i>Δf</i>?"
+        parts:
+          - kind: choice
+            options: ["Yes", "No"]
+            answer: "Yes"
+        explanation: "Yes."

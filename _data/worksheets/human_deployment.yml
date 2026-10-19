@@ -1,0 +1,288 @@
+# Human Deployment worksheet content. See virtual_bench.yml for the basic
+# block and question types. Additional features used here:
+#
+# meta     - fields shown at the top of the page and on the report
+#            (numeric: true + unit for numbers that calculations can use as {meta.<id>})
+# image    - block with src (relative to the site root), alt, caption
+#
+# Part kinds for recording measurements (never graded):
+#   entry  - a measured value. Give it an id to use it in calculations as {id}.
+#            info: live derived values  [{expr, label, unit, digits}]
+#            target: {lt|gt: number or expression, label}
+#            warnings: [{gt|lt: number or expression, message}] shown as a red alert
+#   calc   - a value the participant calculates; expect is the correct expression,
+#            so they get a "matches / check your calculation" hint, plus the target.
+#   choice - without an answer it is just a recorded selection.
+#            alerts: {option: message} shown when that option is chosen.
+#   log    - a table that grows one row at a time (see the sensation test).
+#            step: added to the last first-column value for each new row;
+#            max: cap for that value (number or expression) - adding stops there.
+#
+# Questions with no graded parts and no explanation have no submit button:
+# they count as complete once every field is filled in.
+
+id: human_deployment
+title: TI Stimulation Human Deployment
+report_title: TI Stimulation Human Deployment – Session Log
+report_name_field: participant
+completed_label: Completed
+hint: "Your entries are saved in this browser only – nothing is sent anywhere. Use a participant ID code rather than a name. Use <b>Download log</b> at the bottom of the page to keep a copy."
+download_label: Download log (PDF)
+
+meta:
+  - id: operator
+    label: Operator
+  - id: participant
+    label: Participant ID
+    placeholder: "e.g. P01"
+  - id: stimulator
+    label: TI stimulator (model / serial)
+  - id: compliance
+    label: Stimulator compliance voltage
+    unit: V
+    numeric: true
+
+sections:
+  - heading: "Setup: Electrode Placement"
+    blocks:
+      - type: image
+        src: assets/images/electrode_map_10-10.jpg
+        alt: "10-10 EEG electrode map with TI Active 1 at F7, TI Return 1 at F10, TI Active 2 at T7 and TI Return 2 at P10"
+        width: 460
+
+      - type: params
+        title: TI electrode montage
+        groups:
+          - name: Channel 1 (I1)
+            style: i1
+            rows:
+              - ["TI Active 1", "F7"]
+              - ["TI Return 1", "F10"]
+          - name: Channel 2 (I2)
+            style: i2
+            rows:
+              - ["TI Active 2", "T7"]
+              - ["TI Return 2", "P10"]
+
+      - type: note
+        text: "<i>If locating electrodes manually:</i>"
+
+      - type: step
+        text: "Measure the distance from nasion to inion."
+
+      - type: question
+        id: head-ni
+        prompt: "Nasion–inion distance"
+        parts:
+          - id: ni
+            kind: entry
+            unit: cm
+            info:
+              - { expr: "{ni} / 2", label: "Halfway point", unit: cm, digits: 1 }
+              - { expr: "{ni} / 10", label: "10% increment", unit: cm, digits: 1 }
+
+      - type: note
+        text: "Find and mark halfway along this distance in the nasion–inion axis."
+
+      - type: step
+        text: "Measure the distance from pre-auricular to opposite pre-auricular."
+
+      - type: question
+        id: head-pa
+        prompt: "Pre-auricular to pre-auricular distance"
+        parts:
+          - id: pa
+            kind: entry
+            unit: cm
+            info:
+              - { expr: "{pa} / 2", label: "Halfway point", unit: cm, digits: 1 }
+              - { expr: "{pa} / 10", label: "10% increment", unit: cm, digits: 1 }
+
+      - type: note
+        text: "Find and mark halfway along this distance in the pre-auricular to opposite pre-auricular axis. The intersection between the marked points is the vertex, Cz."
+
+      - type: note
+        text: "Find and mark the TI stimulation electrodes using the 10-10 positioning system (move in increments of 10% of the nasion–inion distance from front to back, and 10% of the pre-auricular distance from side to side)."
+
+      - type: question
+        id: placement-done
+        prompt: "Electrodes placed"
+        task: "All four TI electrodes are marked and placed (F7, F10, T7, P10)"
+
+  - heading: Electrode Contact Test
+    blocks:
+      - type: params
+        title: Stimulation parameters
+        groups:
+          - name: I1
+            style: i1
+            rows:
+              - ["Frequency (Hz)", 2000]
+              - ["Amplitude (mA)", 0.5]
+          - name: I2 OFF
+            style: "off"
+            rows:
+              - ["Frequency (Hz)", "N/A"]
+              - ["Amplitude (mA)", "N/A"]
+
+      - type: note
+        text: "Make the ramp time sufficient to minimise sensation (~5 s) and the stimulation time long enough to record voltage/impedance (~5–10 s)."
+
+      - type: question
+        id: contact-1-voltage
+        prompt: "Record the measurement voltage (target: ≪ compliance voltage)"
+        parts:
+          - id: v1
+            kind: entry
+            unit: V
+            info:
+              - { expr: "{v1} / {meta.compliance} * 100", label: "Share of compliance voltage", unit: "%", digits: 0 }
+            warnings:
+              - { gt: "{meta.compliance}", message: "<b>Warning:</b> Voltage above stimulator compliance voltage!" }
+
+      - type: question
+        id: contact-1-resistance
+        prompt: "Calculate the load resistance from the recorded voltage and set current amplitude (target: < 8 kΩ)"
+        parts:
+          - kind: calc
+            unit: kΩ
+            expect: "{v1} / 0.5"
+            expect_label: "V ÷ I"
+            target: { lt: 8, label: "< 8 kΩ" }
+
+      - type: params
+        title: Stimulation parameters
+        groups:
+          - name: I1 OFF
+            style: "off"
+            rows:
+              - ["Frequency (Hz)", "N/A"]
+              - ["Amplitude (mA)", "N/A"]
+          - name: I2
+            style: i2
+            rows:
+              - ["Frequency (Hz)", 2000]
+              - ["Amplitude (mA)", 0.5]
+
+      - type: note
+        text: "Make the ramp time sufficient to minimise sensation (~5 s) and the stimulation time long enough to record voltage/impedance (~5–10 s)."
+
+      - type: question
+        id: contact-2-voltage
+        prompt: "Record the measurement voltage (target: ≪ compliance voltage)"
+        parts:
+          - id: v2
+            kind: entry
+            unit: V
+            info:
+              - { expr: "{v2} / {meta.compliance} * 100", label: "Share of compliance voltage", unit: "%", digits: 0 }
+            warnings:
+              - { gt: "{meta.compliance}", message: "<b>Warning:</b> Voltage above stimulator compliance voltage!" }
+
+      - type: question
+        id: contact-2-resistance
+        prompt: "Calculate the load resistance from the recorded voltage and set current amplitude (target: < 8 kΩ)"
+        parts:
+          - kind: calc
+            unit: kΩ
+            expect: "{v2} / 0.5"
+            expect_label: "V ÷ I"
+            target: { lt: 8, label: "< 8 kΩ" }
+
+  - heading: Participant Sensation Test
+    blocks:
+      - type: params
+        title: Stimulation parameters
+        groups:
+          - name: I1
+            style: i1
+            rows:
+              - ["Frequency (Hz)", 2000]
+              - ["Amplitude (mA)", 0.5]
+          - name: I2
+            style: i2
+            rows:
+              - ["Frequency (Hz)", 2005]
+              - ["Amplitude (mA)", 0.5]
+
+      - type: note
+        text: "Make the ramp time sufficient to minimise sensation (~5 s) and the stimulation time long enough to record voltage/impedance (~5–10 s)."
+
+      - type: question
+        id: sensation-target
+        prompt: "Target current amplitude for the session"
+        parts:
+          - id: target_ma
+            kind: entry
+            unit: mA
+
+      - type: question
+        id: sensation-log
+        prompt: "Ask the participant which applies, and record the selection at each current step."
+        parts:
+          - kind: log
+            start: ["0.5"]
+            step: 0.3
+            max: "{target_ma}"
+            max_missing: "Enter the target amplitude above – steps stop at the target."
+            max_reached: "Target amplitude reached."
+            add_label: "Add next current step (+0.3 mA)"
+            columns:
+              - label: Current
+                kind: entry
+                unit: mA
+              - label: Sensation
+                kind: choice
+                options: ["No sensation", "Mild sensation (tolerable)", "Painful or significant discomfort"]
+                alerts:
+                  "Painful or significant discomfort": "<b>Mitigate before continuing:</b> press the problematic electrode(s), or reapply the problematic electrode(s)."
+
+      - type: note
+        text: "If the participant has no sensation or mild sensation, increase the current amplitudes in both channels by 0.3 mA (without exceeding the target amplitude) and add the next step."
+
+  - heading: tACS Contrast Test
+    blocks:
+      - type: params
+        title: Stimulation parameters
+        groups:
+          - name: I1
+            style: i1
+            rows:
+              - ["Frequency (Hz)", 20]
+              - ["Amplitude (mA)", 0.1]
+          - name: I2 OFF
+            style: "off"
+            rows:
+              - ["Frequency (Hz)", "N/A"]
+              - ["Amplitude (mA)", "N/A"]
+
+      - type: note
+        text: "Make the ramp time sufficient to minimise sensation (~5 s) and the stimulation time long enough to record voltage/impedance (~5–10 s)."
+
+      - type: question
+        id: tacs-voltage
+        prompt: "Record the measurement voltage (target: ≪ compliance voltage)"
+        parts:
+          - id: v3
+            kind: entry
+            unit: V
+            info:
+              - { expr: "{v3} / {meta.compliance} * 100", label: "Share of compliance voltage", unit: "%", digits: 0 }
+            warnings:
+              - { gt: "{meta.compliance}", message: "<b>Warning:</b> Voltage above stimulator compliance voltage!" }
+
+      - type: question
+        id: tacs-resistance
+        prompt: "Calculate the load resistance from the recorded voltage and set current amplitude"
+        parts:
+          - kind: calc
+            unit: kΩ
+            expect: "{v3} / 0.1"
+            expect_label: "V ÷ I"
+
+      - type: question
+        id: tacs-sensation
+        prompt: "Ask the participant which applies, and record the selection."
+        parts:
+          - kind: choice
+            options: ["No sensation", "Mild sensation (tolerable)", "Painful or significant discomfort"]

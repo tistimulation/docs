@@ -1,11 +1,14 @@
 ---
 title: Current Frequency Response
 layout: default
-parent: Testing Stimulator Outputs
+parent: Individual Test Procedures
+grand_parent: Testing Stimulator Outputs
 nav_order: 3
 ---
 
 # Testing Stimulator Current Output Frequency Response
+Record your results in the [hardware testing worksheet]({% link stim_output/worksheet.md %}#frequency-response).
+
 The tester should test each TI channel independently for this test, i.e. if channel 1 is outputting current, then channel 2 should be switched off - and vice versa.
 
 ## Procedure - Assessing Frequency Response of Stimulator Output

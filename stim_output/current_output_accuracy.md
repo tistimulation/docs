@@ -1,11 +1,14 @@
 ---
 title: Current Output Accuracy
 layout: default
-parent: Testing Stimulator Outputs
+parent: Individual Test Procedures
+grand_parent: Testing Stimulator Outputs
 nav_order: 2
 ---
 
 # Testing Stimulator Current Output Accuracy
+Record your results in the [hardware testing worksheet]({% link stim_output/worksheet.md %}#current-output-accuracy).
+
 The tester should test each TI channel independently for this test, i.e. if channel 1 is outputting current, then channel 2 should be switched off - and vice versa.
 
 ## Procedure - Comparing Actual Current Amplitude to Programmed Current Amplitude

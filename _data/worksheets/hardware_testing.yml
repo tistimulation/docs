@@ -1,0 +1,238 @@
+# Hardware Testing worksheet content (replaces TI_Workshop_HardwareTesting_Practical.xlsx).
+# See virtual_bench.yml and human_deployment.yml for the basic block and part types.
+# Additional features used here:
+#
+# toc: true          - quick links to each section under the header
+# section anchor     - id used in links, e.g. worksheet.html#channel-isolation
+# part default       - pre-filled value (entry, choice)
+# choice values      - number each option stands for in calculations, e.g. {acc_k}
+# question optional  - not counted in the progress total
+#
+# kind: grid - a measurement table, one column per channel or frequency.
+#   columns: [{label, style}]   style: i1 | i2 | x (header colour)
+#   rows (worked out top to bottom for each column):
+#     heading - a group label row
+#     input   - a value typed in; default: value or [per column]
+#     fixed   - a shown value; values: [per column], may be expressions like "{r1}"
+#     calc    - expr, using {col.<row id>} for rows in the same column and {<id>}
+#               for values elsewhere; digits; target: {lt|gt, abs, label} or [per column]
+#   na: [column indexes] leaves those cells empty.
+
+id: hardware_testing
+title: TI Stimulator Hardware Testing
+report_title: TI Stimulator Hardware Testing – Test Report
+report_name_field: serial
+completed_label: Completed
+toc: true
+hint: "Your entries are saved in this browser only – nothing is sent anywhere. Calculated values and target checks update as you type. Use <b>Download report</b> at the bottom of the page to keep a copy."
+
+meta:
+  - id: manufacturer
+    label: Manufacturer
+  - id: model
+    label: Model
+  - id: serial
+    label: Serial number
+  - id: operator
+    label: Operator
+  - id: equipment
+    label: Test equipment
+
+sections:
+  - heading: Test Setup
+    anchor: test-setup
+    blocks:
+      - type: image
+        src: assets/images/hbridge_test_pcb.png
+        alt: "H-bridge test PCB. V_R1 (assess channel 1 output current), V_R3 (assess channel 1–2 cross current) and V_R2 (assess channel 2 output current) are measured at the circled BNC connectors."
+        width: 640
+
+      - type: question
+        id: hbridge
+        prompt: "H-bridge resistor values"
+        parts:
+          - id: rtotal
+            label: Total resistance
+            kind: entry
+            unit: kΩ
+            default: 2
+          - id: r1
+            label: Sense resistor R1
+            kind: entry
+            unit: kΩ
+            default: 1
+          - id: r2
+            label: Sense resistor R2
+            kind: entry
+            unit: kΩ
+            default: 1
+          - id: r3
+            label: Sense resistor R3
+            kind: entry
+            unit: kΩ
+            default: 0.068
+
+      - type: note
+        text: "The defaults are the values on the workshop test PCB. Change them if your board uses different resistors – every calculation below uses these values."
+
+  - heading: Current Output Accuracy
+    anchor: current-output-accuracy
+    blocks:
+      - type: note
+        text: "Perform the procedure on each channel individually, focusing on a single current at a time. Full procedure: <a href=\"current_output_accuracy.html\">Current Output Accuracy</a>."
+
+      - type: note
+        text: "<ol><li>Connect the TI stimulator and measurement equipment to the resistor H-bridge (sense resistors R1 and R2).</li><li>Set &amp; apply the TI stimulation test parameters (defaults: 2000 Hz, 2 mA, 10 s duration with no ramping). Set the duration sufficiently long for a reading.</li><li>Read the voltage on the sense resistor &amp; log the measured voltage.</li><li>The current is calculated from the measured voltage.</li><li>Assess TI stimulator accuracy against the targets.</li></ol>"
+
+      - type: question
+        id: acc-instrument
+        prompt: "Voltage measured with"
+        parts:
+          - id: acc_k
+            kind: choice
+            options: ["Oscilloscope (peak)", "Multimeter (RMS)"]
+            values: { "Oscilloscope (peak)": 1, "Multimeter (RMS)": 1.4142135623730951 }
+            default: "Oscilloscope (peak)"
+            info_text: "A multimeter reads RMS voltage, so it is multiplied by √2 to give the peak current."
+
+      - type: question
+        id: acc-grid
+        prompt: "Settings and measurements"
+        parts:
+          - kind: grid
+            columns:
+              - { label: "Channel 1 (R1)", style: i1 }
+              - { label: "Channel 2 (R2)", style: i2 }
+            rows:
+              - { type: heading, label: Setting }
+              - { id: set_f, type: input, label: "Frequency (Hz)", default: 2000 }
+              - { id: set_a, type: input, label: "Amplitude (mA)", default: 2 }
+              - { type: heading, label: Measurement }
+              - { id: r, type: fixed, label: "Sense resistor (kΩ)", values: ["{r1}", "{r2}"], digits: 3 }
+              - { id: v, type: input, label: "Voltage on sense resistor (V)" }
+              - { id: i, type: calc, label: "Calculated current (mA)", expr: "{col.v} * {acc_k} / {col.r}", digits: 3 }
+              - { id: ierr, type: calc, label: "Current error (%)", expr: "({col.i} - {col.set_a}) / {col.set_a} * 100", digits: 2, target: { abs: true, lt: 5, label: "Target: |error| < 5 %" } }
+              - { id: f, type: input, label: "Measured frequency (Hz)" }
+              - { id: ferr, type: calc, label: "Frequency error (Hz)", expr: "{col.f} - {col.set_f}", digits: 3, target: { abs: true, lt: 0.1, label: "Target: |error| < 0.1 Hz" } }
+
+      - type: note
+        text: "<b>Additional tests (optional)</b>"
+
+      - type: question
+        id: acc-leakage
+        optional: true
+        prompt: "Current leakage: set and apply 0 mA currents and validate that no current is applied."
+        task: "Done"
+        text: "Observations (optional)"
+
+      - type: question
+        id: acc-timing
+        optional: true
+        prompt: "Timing: measure the duration and ramping periods and test them against the set values."
+        task: "Done"
+        text: "Observations (optional)"
+
+  - heading: Frequency Response
+    anchor: frequency-response
+    blocks:
+      - type: note
+        text: "Perform the procedure on each channel individually, focusing on a single current at a time. Full procedure: <a href=\"current_output_frequency_response.html\">Current Frequency Response</a>."
+
+      - type: note
+        text: "<ol><li>Connect the TI stimulator and measurement equipment to the resistor H-bridge (sense resistors R1 and R2).</li><li>Set &amp; apply the TI stimulation test parameters at each frequency (defaults: 2 mA, 10 s duration with no ramping). Set the duration sufficiently long for a reading.</li><li>Read the voltage on the sense resistor &amp; log the measured voltage.</li><li>The current is calculated from the measured voltage.</li><li>Assess TI stimulator accuracy across frequency against the target.</li></ol>"
+
+      - type: question
+        id: fr-instrument
+        prompt: "Voltage measured with"
+        parts:
+          - id: fr_k
+            kind: choice
+            options: ["Oscilloscope (peak)", "Multimeter (RMS)"]
+            values: { "Oscilloscope (peak)": 1, "Multimeter (RMS)": 1.4142135623730951 }
+            default: "Oscilloscope (peak)"
+            info_text: "A multimeter reads RMS voltage, so it is multiplied by √2 to give the peak current."
+
+      - type: question
+        id: fr-ch1
+        prompt: "Channel 1"
+        parts:
+          - id: fr1_amp
+            label: "Amplitude – same for all frequencies"
+            kind: entry
+            unit: mA
+            default: 2
+          - kind: grid
+            columns:
+              - { label: "1 kHz", style: i1 }
+              - { label: "5 kHz", style: i1 }
+              - { label: "10 kHz", style: i1 }
+              - { label: "20 kHz", style: i1 }
+              - { label: "50 kHz", style: i1 }
+            rows:
+              - { id: v, type: input, label: "Voltage on R1 (V)" }
+              - { id: i, type: calc, label: "Calculated current (mA)", expr: "{col.v} * {fr_k} / {r1}", digits: 3 }
+              - { id: err, type: calc, label: "Current error (%)", expr: "({col.i} - {fr1_amp}) / {fr1_amp} * 100", digits: 2, target: { abs: true, lt: 5, label: "Target: |error| < 5 %" } }
+
+      - type: question
+        id: fr-ch2
+        prompt: "Channel 2"
+        parts:
+          - id: fr2_amp
+            label: "Amplitude – same for all frequencies"
+            kind: entry
+            unit: mA
+            default: 2
+          - kind: grid
+            columns:
+              - { label: "1 kHz", style: i2 }
+              - { label: "5 kHz", style: i2 }
+              - { label: "10 kHz", style: i2 }
+              - { label: "20 kHz", style: i2 }
+              - { label: "50 kHz", style: i2 }
+            rows:
+              - { id: v, type: input, label: "Voltage on R2 (V)" }
+              - { id: i, type: calc, label: "Calculated current (mA)", expr: "{col.v} * {fr_k} / {r2}", digits: 3 }
+              - { id: err, type: calc, label: "Current error (%)", expr: "({col.i} - {fr2_amp}) / {fr2_amp} * 100", digits: 2, target: { abs: true, lt: 5, label: "Target: |error| < 5 %" } }
+
+  - heading: Channel Isolation
+    anchor: channel-isolation
+    blocks:
+      - type: note
+        text: "Use an oscilloscope for this test. Full procedure: <a href=\"channel_isolation.html\">Channel Isolation (Crosstalk)</a>."
+
+      - type: note
+        text: "<ol><li>Connect the TI stimulator and measurement equipment to the resistor H-bridge (sense resistors R1, R2 and R3).</li><li>Set &amp; apply the TI stimulation test parameters (defaults: 2000 Hz and 2010 Hz, 2 mA and 2 mA, 10 s duration with no ramping). Set the duration sufficiently long for a reading.</li><li>Read the voltage on all three sense resistors &amp; log the measured voltages.</li><li>The amplitude modulation (AM) index is calculated for each.</li><li>Assess TI stimulator channel isolation against the targets.</li></ol>"
+
+      - type: question
+        id: iso-settings
+        prompt: "Settings"
+        parts:
+          - kind: grid
+            columns:
+              - { label: "Channel 1", style: i1 }
+              - { label: "Channel 2", style: i2 }
+            rows:
+              - { id: f, type: input, label: "Frequency (Hz)", default: [2000, 2010] }
+              - { id: a, type: input, label: "Amplitude (mA)", default: [2, 2] }
+
+      - type: question
+        id: iso-grid
+        prompt: "Measurements"
+        parts:
+          - kind: grid
+            columns:
+              - { label: "Channel 1 (R1)", style: i1 }
+              - { label: "Channel 2 (R2)", style: i2 }
+              - { label: "Crossing (R3)", style: x }
+            rows:
+              - { id: max, type: input, label: "Max envelope voltage (V)" }
+              - { id: min, type: input, label: "Min envelope voltage (V)" }
+              - id: am
+                type: calc
+                label: "Calculated AM index (0–1)"
+                expr: "({col.max} - abs({col.min})) / ({col.max} + abs({col.min}))"
+                digits: 3
+                target:
+                  - { lt: 0.05, label: "Target < 0.05" }
+                  - { lt: 0.05, label: "Target < 0.05" }
+                  - { gt: 0.95, label: "Target > 0.95" }

@@ -1,0 +1,9 @@
+{% comment %}
+  Interactive worksheet. Usage:
+    {% include worksheet.html data=site.data.worksheets.virtual_bench %}
+  Content lives in _data/worksheets/*.yml; behaviour in assets/js/worksheet.js.
+{% endcomment %}
+<link rel="stylesheet" href="{{ '/assets/css/worksheet.css' | relative_url }}">
+<div id="ws-root" class="ws" data-base="{{ site.baseurl }}"><noscript>This worksheet needs JavaScript enabled.</noscript></div>
+<script type="application/json" id="ws-data">{{ include.data | jsonify }}</script>
+<script src="{{ '/assets/js/worksheet.js' | relative_url }}"></script>

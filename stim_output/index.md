@@ -7,7 +7,7 @@ has_children: true
 
 This section documents testing protocols for TI stimulator outputs.
 
-To record experimental results - please use the attached [Microsoft Excel spreadsheet](../TI_Workshop_HardwareTesting_Practical.xlsx).
+To record experimental results, use the interactive [worksheet]({% link stim_output/worksheet.md %}).
 
 Note that the test load used throughout these protocols is a resistive network in a H-Bridge topology. An understanding of [Ohm's Law](https://en.wikipedia.org/wiki/Ohm%27s_law) is recommended.
 

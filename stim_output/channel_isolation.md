@@ -1,11 +1,14 @@
 ---
 title: Channel Isolation (Crosstalk)
 layout: default
-parent: Testing Stimulator Outputs
+parent: Individual Test Procedures
+grand_parent: Testing Stimulator Outputs
 nav_order: 4
 ---
 
 # Testing Stimulator Channel Isolation
+Record your results in the [hardware testing worksheet]({% link stim_output/worksheet.md %}#channel-isolation).
+
 This test procedure covers how to verify the current waveforms being delivered by each channel of the stimulator are isolated from eachother at the source.
 
 1. Connect the active and return of TI channel 1 to the left side of the resistive network.
