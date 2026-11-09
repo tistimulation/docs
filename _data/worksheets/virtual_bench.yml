@@ -58,7 +58,7 @@ sections:
             options: ["Yes", "No"]
             answer: "Yes"
         text: "If modulation is observed – why?"
-        explanation: "No current modulation because of channel isolation. Voltage modulation because each current source must compensate for the opposite current's frequency across the common load."
+        explanation: "Current: No. Voltage: Yes. In TI stimulation two currents are simultaneously applied to the head (a common conductor). To keep each current at a single frequency at the electrode sites, the voltage is automatically adjusted to counteract the other current. The applied currents hence oscillate at a single frequency, with no amplitude modulation (i.e., no change in the amplitude over time). In contrast, the applied voltages can oscillate at two frequencies, resulting in an amplitude modulation."
 
       - type: note
         text: "Inspect the spectrum of the sum current."
@@ -71,7 +71,7 @@ sections:
             options: ["Yes", "No"]
             answer: "No"
         text: "Why or why not?"
-        explanation: "No – because only 2000 Hz and 2010 Hz are output from the stimulators."
+        explanation: "No. The sum of current <i>I</i><sub>1</sub> oscillating at 2000 Hz and current <i>I</i><sub>2</sub> oscillating at 2010 Hz is a current that oscillates at both 2000 Hz and 2010 Hz, leading to amplitude modulation at the difference frequency <i>Δf</i> = 10 Hz (2010 Hz − 2000 Hz), but there is no current component oscillating at <i>Δf</i>."
 
       - type: note
         text: "Inspect the waveform and spectrum of the sum current."
@@ -84,7 +84,7 @@ sections:
             answer: 2
             unit: mA
             tolerance: 0.05
-        explanation: "2 mA – at the envelope peak the two 1 mA currents add in phase (1 + 1 = 2 mA)."
+        explanation: "2 mA. The maximum amplitude of the current sum is the sum of the individual current amplitudes. Since each current is 1 mA, the maximal current sum is 2 mA."
 
       - type: question
         id: wf-env
@@ -94,7 +94,7 @@ sections:
             answer: 1
             unit: mA
             tolerance: 0.05
-        explanation: "1 mA – the envelope swings between 2 mA (currents in phase) and 0 mA (currents in anti-phase), so (2 − 0) / 2 = 1 mA."
+        explanation: "1 mA. The maximum amplitude is 1 mA + 1 mA = 2 mA. The minimum amplitude is 1 mA − 1 mA = 0 mA. The envelope amplitude is half of the difference between the maximum and minimum amplitudes: (max − min) / 2 = (2 mA − 0 mA) / 2 = 1 mA."
 
       - type: step
         text: "Decrease the amplitude of I1 (Amplitude 1) to 0.5 mA.<br>Increase the amplitude of I2 (Amplitude 2) to 1.5 mA."
@@ -109,7 +109,7 @@ sections:
           - kind: choice
             options: ["Yes", "No"]
             answer: "No"
-        explanation: "No – the maximum is still 0.5 + 1.5 = 2 mA."
+        explanation: "No. The maximum amplitude is not different since we decreased current <i>I</i><sub>1</sub> by 0.5 mA and increased current <i>I</i><sub>2</sub> by the same amount (0.5 mA), so the maximum is still 0.5 mA + 1.5 mA = 2 mA."
 
       - type: question
         id: wf-env-2
@@ -119,7 +119,7 @@ sections:
             options: ["Yes", "No"]
             answer: "Yes"
         text: "Why?"
-        explanation: "Yes – because the current ratio changed. The envelope now swings between 2 mA and 1 mA (1.5 − 0.5), so the envelope amplitude is (2 − 1) / 2 = 0.5 mA."
+        explanation: "Yes. Although the maximum amplitude is the same, the minimum amplitude is larger (1.5 mA − 0.5 mA = 1 mA), resulting in a smaller envelope amplitude: (2 mA − 1 mA) / 2 = 0.5 mA."
 
   - heading: Field Distribution Visualiser
     blocks:
@@ -186,30 +186,7 @@ sections:
         id: fd-location-1
         prompt: "How does it affect the location of the TI locus relative to the electrodes?"
         text: "Your observation"
-        explanation: "The locus is closer to the weaker stimulation electrode pair (Pair A)."
-
-      - type: step
-        text: "Change the Pair A current I1 amplitude to 0.2 mA.<br>Change the Pair B current I2 amplitude to 1.8 mA."
-
-      - type: question
-        id: fd-ratio-2
-        prompt: "What is the current sum and current amplitude ratio?"
-        parts:
-          - label: Current sum
-            kind: numeric
-            answer: 2
-            unit: mA
-            tolerance: 0.01
-          - label: "Amplitude ratio (I1 : I2)"
-            kind: ratio
-            answer: "1:9"
-        explanation: "Sum: 0.2 + 1.8 = 2 mA. Amplitude ratio: 0.2 : 1.8 = 1 : 9."
-
-      - type: question
-        id: fd-location-2
-        prompt: "How does it affect the location of the TI locus relative to the electrodes?"
-        text: "Your observation"
-        explanation: "The locus is even closer to the weaker stimulation electrode pair (Pair A)."
+        explanation: "The TI locus is steered towards electrode pair A, the pair with the weaker current."
 
       - type: note
         text: "Switch back to the Waveform Visualiser tab."
@@ -249,26 +226,29 @@ sections:
         parts:
           - kind: choice
             options: ["Yes", "No"]
-            answer: "Yes"
-        explanation: "Yes – I2 switches from 2000 Hz to 2100 Hz during each pulse."
+            answer: "No"
+        explanation: "No. The periodic frequency switch is not easily evident in the waveform due to the phase continuity and the relatively small frequency step (compared to kHz)."
 
       - type: note
         text: "Inspect the spectrum of the applied currents."
 
       - type: question
         id: fsk-spectrum
-        prompt: "How does it differ from normal TI stimulation?"
+        prompt: "How does it differ from standard TI stimulation?"
         text: "Your observation"
-        explanation: "There are many spikes in the spectrum, they are 10 Hz apart and cancel to zero at multiples of 100 Hz."
+        explanation: "The spectrum of <i>I</i><sub>2</sub> is different from the single frequency component seen in standard TI stimulation. Specifically, the periodic frequency switching in <i>I</i><sub>2</sub> results in spectral components at the stimulation frequencies (2000 Hz, 2100 Hz) and at 10 Hz (the pulse repetition frequency) intervals from them, with a decaying amplitude that is zeroed at 100 Hz (the inverse of the pulse width) intervals."
 
       - type: note
-        text: "Inspect the spectrum of the sum current."
+        text: "Inspect the waveform of the current sum."
 
       - type: question
         id: fsk-sum
-        prompt: "How does it differ from the individual applied currents?"
+        prompt: "How does it differ from the waveforms of the applied currents?"
         text: "Your observation"
-        explanation: "There is no current outside of the pulse."
+        explanation: "The current sum displays periodic pulses of kHz signal with zero amplitude between pulses."
+
+      - type: note
+        text: "Inspect the spectrum of the current sum."
 
       - type: question
         id: fsk-df
@@ -277,7 +257,7 @@ sections:
           - kind: choice
             options: ["Yes", "No"]
             answer: "No"
-        explanation: "No."
+        explanation: "No. Because <i>Δf</i> is 100 Hz, the pulsed waveform decays to zero at every multiple of <i>Δf</i> (decaying sinc sidelobes)."
 
       - type: question
         id: fsk-prf
@@ -349,13 +329,16 @@ sections:
               - ["Amplitude 2 (mA)", 1]
 
       - type: note
-        text: "Inspect the waveform and spectrum of the sum current."
+        text: "Inspect the waveform of the applied currents."
 
       - type: question
         id: pwm-diff
-        prompt: "How does it differ from normal TI stimulation?"
+        prompt: "How do they differ from standard TI stimulation?"
         text: "Your observation"
-        explanation: "The currents are square waves."
+        explanation: "The applied currents are square waves and not sine waves."
+
+      - type: note
+        text: "Inspect the spectrum of the applied currents and the current sum."
 
       - type: question
         id: pwm-df
@@ -364,4 +347,4 @@ sections:
           - kind: choice
             options: ["Yes", "No"]
             answer: "Yes"
-        explanation: "Yes."
+        explanation: "Yes. Because square waves are highly non-linear."
